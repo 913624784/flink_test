@@ -1,5 +1,6 @@
 package com.qzw.test
 
+import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.streaming.api.scala._
 
 
@@ -14,7 +15,12 @@ object StreamWordCount {
 
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
-    val socketDs = env.socketTextStream("localhost", 9999)
+
+    val params = ParameterTool.fromArgs(args)
+    val host = params.get("host")
+    val port = params.getInt("port")
+
+    val socketDs = env.socketTextStream(host, port)
     val wd = socketDs
       .filter(_.nonEmpty)
       .flatMap(_.split(" "))
