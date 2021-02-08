@@ -1,6 +1,6 @@
-package com.qzw.test.SinkTest
+package com.qzw.test.sink
 
-import com.qzw.test.SourceTest.SensorReading
+import com.qzw.test.source.SourceTest.SensorReading
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.sink.{RichSinkFunction, SinkFunction}
 import org.apache.flink.streaming.api.scala._

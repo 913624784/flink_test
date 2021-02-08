@@ -1,6 +1,6 @@
 package com.qzw.test.window
 
-import com.qzw.test.SourceTest.SensorReading
+import com.qzw.test.source.SourceTest.SensorReading
 import org.apache.flink.api.common.eventtime.{SerializableTimestampAssigner, WatermarkStrategy}
 import org.apache.flink.api.common.functions.ReduceFunction
 import org.apache.flink.streaming.api.TimeCharacteristic

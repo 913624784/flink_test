@@ -1,4 +1,4 @@
-package com.qzw.test
+package com.qzw.test.source
 
 import org.apache.flink.streaming.api.scala._
 

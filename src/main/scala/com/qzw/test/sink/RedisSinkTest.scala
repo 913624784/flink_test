@@ -1,6 +1,6 @@
-package com.qzw.test.SinkTest
+package com.qzw.test.sink
 
-import com.qzw.test.SourceTest.SensorReading
+import com.qzw.test.source.SourceTest.SensorReading
 import org.apache.flink.streaming.api.scala._
 import org.apache.flink.streaming.connectors.redis.RedisSink
 import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisPoolConfig

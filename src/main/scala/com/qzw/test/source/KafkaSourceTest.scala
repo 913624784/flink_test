@@ -1,10 +1,8 @@
-package com.qzw.test
+package com.qzw.test.source
 
-import com.qzw.test.SourceTest.SensorReading
-import org.apache.flink.api.common.serialization.SimpleStringSchema
+import com.qzw.test.source.SourceTest.SensorReading
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer
 
 import java.util.Properties
 import scala.util.Random
@@ -24,7 +22,7 @@ object KafkaSourceTest {
     properties.setProperty("group.id", "KafkaSourceTest")
     properties.setProperty("auto.offset.reset", "latest")
 
-//    val kafka = env.addSource(new FlinkKafkaConsumer[String]("test", new SimpleStringSchema(), properties))
+    //    val kafka = env.addSource(new FlinkKafkaConsumer[String]("test", new SimpleStringSchema(), properties))
     val kafka = env.addSource(new SensorSource)
 
     kafka.print()

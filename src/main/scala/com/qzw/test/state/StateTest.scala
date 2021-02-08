@@ -1,6 +1,6 @@
 package com.qzw.test.state
 
-import com.qzw.test.SourceTest.SensorReading
+import com.qzw.test.source.SourceTest.SensorReading
 import com.qzw.test.window.MyReduce
 import org.apache.flink.api.common.functions.RichMapFunction
 import org.apache.flink.api.common.state.{ListState, ListStateDescriptor, MapState, MapStateDescriptor, ReducingState, ReducingStateDescriptor, ValueState, ValueStateDescriptor}

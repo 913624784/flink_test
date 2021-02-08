@@ -1,6 +1,6 @@
-package com.qzw.test
+package com.qzw.test.transform
 
-import com.qzw.test.SourceTest.SensorReading
+import com.qzw.test.source.SourceTest.SensorReading
 import org.apache.flink.api.common.functions.{FilterFunction, RichMapFunction}
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.scala._
