@@ -1,4 +1,4 @@
-package com.qzw.test.status
+package com.qzw.test.state
 
 import com.qzw.test.SourceTest.SensorReading
 import com.qzw.test.window.MyReduce
