@@ -23,7 +23,7 @@ object ProcessFunctionTest {
 
     /**
      * 默认情况下，状态是保持在 TaskManagers 的内存中，checkpoint 保存在 JobManager 的内存中。为了合适地持久化大体量状态， Flink 支持各种各样的途径去存储 checkpoint 状态到其他的 state backends 上。通过 StreamExecutionEnvironment.setStateBackend(…) 来配置所选的 state backends。
-     * 增量试的存储 checkpoint
+     * 是否增量的存储 checkpoint
      */
     env.setStateBackend(new RocksDBStateBackend("file:///Users/qizhiwei/Downloads/test/checkpoint/ProcessFunctionTest", true).asInstanceOf[StateBackend])
 
@@ -100,7 +100,7 @@ class SplitProcess(threshold: Double) extends ProcessFunction[SensorReading, Sen
       out.collect(value)
     } else {
       //输出到侧输出流
-      ctx.output(new OutputTag[SensorReading]("low"), SensorReading(value.id, value.timeStamp, value.temperature))
+      ctx.output(new OutputTag[SensorReading]("low"), value)
     }
   }
 }
