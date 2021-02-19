@@ -29,7 +29,7 @@ object WindowTest {
     val socketDs = env.socketTextStream("localhost", 9999)
     val ds: DataStream[SensorReading] = socketDs
       .map(line => {
-        val sensor = line.split(", ")
+        val sensor = line.split(",")
         SensorReading(sensor(0).trim, sensor(1).trim.toLong, sensor(2).trim.toDouble)
       })
       //      .assignAscendingTimestamps(_.timeStamp * 1000L) //数据中时间戳是升序的时候可以用这个

@@ -23,7 +23,7 @@ object StateTest {
     val socketDs = env.socketTextStream("localhost", 9999)
     val ds: DataStream[SensorReading] = socketDs
       .map(line => {
-        val sensor = line.split(", ")
+        val sensor = line.split(",")
         SensorReading(sensor(0).trim, sensor(1).trim.toLong, sensor(2).trim.toDouble)
       })
 

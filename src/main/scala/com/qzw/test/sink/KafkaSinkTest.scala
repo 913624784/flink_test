@@ -27,7 +27,7 @@ object KafkaSinkTest {
     //Transform 操作
     val dataStream = kafka
       .map(line => {
-        val sensor = line.split(", ")
+        val sensor = line.split(",")
         SensorReading(sensor(0).trim, sensor(1).trim.toLong, sensor(2).trim.toDouble).toString
       })
 

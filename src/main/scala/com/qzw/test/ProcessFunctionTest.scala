@@ -30,6 +30,7 @@ object ProcessFunctionTest {
     /**
      * 默认情况下 checkpoint 是禁用的。通过调用 StreamExecutionEnvironment 的 enableCheckpointing(n) 来启用 checkpoint，里面的 n 是进行 checkpoint 的间隔，单位毫秒。
      * 设置模式为精确一次 (这是默认值)
+     * Flink 现在为没有迭代（iterations）的作业提供一致性的处理保证。在迭代作业上开启 checkpoint 会导致异常。为了在迭代程序中强制进行 checkpoint，用户需要在开启 checkpoint 时设置一个特殊的标志： env.enableCheckpointing(interval, CheckpointingMode.EXACTLY_ONCE, force = true)。
      */
     env.enableCheckpointing(1000, CheckpointingMode.EXACTLY_ONCE)
 
@@ -63,7 +64,7 @@ object ProcessFunctionTest {
 
     /**
      * 并发 checkpoint 的数目: 默认情况下，在上一个 checkpoint 未完成（失败或者成功）的情况下，系统不会触发另一个 checkpoint。这确保了拓扑不会在 checkpoint 上花费太多时间，从而影响正常的处理流程。 不过允许多个 checkpoint 并行进行是可行的，对于有确定的处理延迟（例如某方法所调用比较耗时的外部服务），但是仍然想进行频繁的 checkpoint 去最小化故障后重跑的 pipelines 来说，是有意义的。
-     * 该选项不能和 “checkpoints 间的最小时间”同时使用。
+     * 该选项不能和 “checkpoints 间的最小时间（setMinPauseBetweenCheckpoints）”同时使用。
      * 同一时间只允许一个 checkpoint 进行
      */
     env.getCheckpointConfig.setMaxConcurrentCheckpoints(1)
@@ -72,7 +73,7 @@ object ProcessFunctionTest {
     val socketDs = env.socketTextStream("localhost", 9999)
     val ds: DataStream[SensorReading] = socketDs
       .map(line => {
-        val sensor = line.split(", ")
+        val sensor = line.split(",")
         SensorReading(sensor(0).trim, sensor(1).trim.toLong, sensor(2).trim.toDouble)
       })
 
