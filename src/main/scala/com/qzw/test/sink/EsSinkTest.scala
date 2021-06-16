@@ -15,7 +15,7 @@ import java.util
  * @date : 2021/2/5
  * @Description : ${Description}
  */
-object EsSInkTest {
+object EsSinkTest {
   def main(args: Array[String]): Unit = {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
     env.setParallelism(1)
