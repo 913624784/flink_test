@@ -18,9 +18,12 @@
 
 package com.qzw.test.streaming
 
+import org.apache.flink.api.common.serialization.SimpleStringEncoder
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.api.scala._
+import org.apache.flink.core.fs.Path
 import org.apache.flink.streaming.api.TimeCharacteristic
+import org.apache.flink.streaming.api.functions.sink.filesystem.{OutputFileConfig, StreamingFileSink}
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
@@ -80,9 +83,14 @@ object SessionWindowing {
       .sum(2)
 
     if (fileOutput) {
-      aggregated.writeAsText(params.get("output"))
+      val sink = StreamingFileSink.forRowFormat(
+        new Path("src/main/resources/test/"),
+        new SimpleStringEncoder[(String, Long, Int)]("UTF-8")
+      ).build()
+      aggregated.addSink(sink)
+//      aggregated.writeAsText(params.get("output"))
     } else {
-      print("Printing result to stdout. Use --output to specify output path.")
+      println("Printing result to stdout. Use --output to specify output path.")
       aggregated.print()
     }
 

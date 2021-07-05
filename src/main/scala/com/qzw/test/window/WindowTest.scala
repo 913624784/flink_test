@@ -6,8 +6,9 @@ import org.apache.flink.api.common.functions.ReduceFunction
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
 import org.apache.flink.streaming.api.scala._
-import org.apache.flink.streaming.api.windowing.assigners.{EventTimeSessionWindows, SlidingProcessingTimeWindows, TumblingEventTimeWindows}
+import org.apache.flink.streaming.api.windowing.assigners.{EventTimeSessionWindows, SlidingProcessingTimeWindows, TumblingEventTimeWindows, TumblingProcessingTimeWindows}
 import org.apache.flink.streaming.api.windowing.time.Time
+import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.streaming.runtime.operators.util.AssignerWithPunctuatedWatermarksAdapter
 
 import java.time.Duration
@@ -22,7 +23,7 @@ object WindowTest {
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 
     val lateTag = new OutputTag[SensorReading]("late")
-    //时间语义 默认 ProcessTime
+    //时间语义 默认 ProcessTime 在 Flink 1.12 中，默认的流时间特性已更改为EventTime
     env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)
 
     env.setParallelism(1)
@@ -37,7 +38,7 @@ object WindowTest {
         .forBoundedOutOfOrderness[SensorReading](Duration.ofSeconds(3)) //分布式数据乱序用这个
         .withTimestampAssigner(new SerializableTimestampAssigner[SensorReading] {
           override def extractTimestamp(element: SensorReading, recordTimestamp: Long): Long = element.timeStamp * 1000L
-        })
+        }).withIdleness(Duration.ofMinutes(10)) //处理空闲数据源
       )
 
 
@@ -47,7 +48,7 @@ object WindowTest {
       //      .window(TumblingEventTimeWindows.of(Time.seconds(5))) //滚动窗口
       //      .window(SlidingProcessingTimeWindows.of(Time.seconds(5), Time.seconds(3)) //滑动窗口
       //      .window(EventTimeSessionWindows.withGap(Time.seconds(5))) //会话窗口
-      .timeWindow(Time.seconds(15))
+      .window(TumblingEventTimeWindows.of(Time.seconds(15))) // 取决于setStreamTimeCharacteristic 设置
       .allowedLateness(Time.minutes(1)) //允许数据迟到的最大时间
       .sideOutputLateData(lateTag) //将迟到的数据输出到侧输出流
       //      .countWindow(10)
