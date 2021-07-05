@@ -99,6 +99,7 @@ class SplitProcess(threshold: Double) extends ProcessFunction[SensorReading, Sen
     //按照阈值做分流
     if (value.temperature > threshold) {
       out.collect(value)
+      ctx.output(new OutputTag[SensorReading]("high"), value)
     } else {
       //输出到侧输出流
       ctx.output(new OutputTag[SensorReading]("low"), value)

@@ -1,1 +1,25 @@
-{"type": "record", "namespace": "example.avro", "name": "User", "fields": [{"type": "string", "name": "name"}, {"type": ["string", "null"], "name": "favorite_color"}, {"type": {"items": "int", "type": "array"}, "name": "favorite_numbers"}]}
+{
+  "type": "record",
+  "namespace": "example.avro",
+  "name": "User",
+  "fields": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": [
+        "string",
+        "null"
+      ],
+      "name": "favorite_color"
+    },
+    {
+      "type": {
+        "items": "int",
+        "type": "array"
+      },
+      "name": "favorite_numbers"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 package com.qzw.test.transform
 
+import com.qzw.test.SplitProcess
 import com.qzw.test.source.SourceTest.SensorReading
 import org.apache.flink.api.common.functions.{FilterFunction, RichMapFunction}
 import org.apache.flink.configuration.Configuration
@@ -29,13 +30,10 @@ object TransformTest {
 
 
     //split and select
-    val splitStream = wd.split(data => {
-      if (data.temperature > 37) Seq("high") else Seq("low")
-    })
+    val splitStream = wd.process(new SplitProcess(37.0))
 
-    val highStream = splitStream.select("high")
-    val lowStream = splitStream.select("low")
-    val allStream = splitStream.select("high", "low")
+    val highStream = splitStream.getSideOutput(new OutputTag[SensorReading]("high"))
+    val lowStream = splitStream.getSideOutput(new OutputTag[SensorReading]("low"))
 
     //connect(两条流的数据类型可以不同，只能两条流合并) and coMap/coFlatMap
     val warning = highStream.map(sensor => (sensor.id, sensor.temperature))

@@ -48,7 +48,7 @@ class MyJdbcSink extends RichSinkFunction[SensorReading] {
   }
 
   //执行 sql
-  override def invoke(value: SensorReading, context: SinkFunction.Context[_]): Unit = {
+  override def invoke(value: SensorReading, context: SinkFunction.Context): Unit = {
     //执行更新语句
     updateStmt.setDouble(1, value.temperature)
     updateStmt.setString(2, value.id)
