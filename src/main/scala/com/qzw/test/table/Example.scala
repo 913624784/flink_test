@@ -3,6 +3,7 @@ package com.qzw.test.table
 import com.qzw.test.source.SourceTest.SensorReading
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
+import org.apache.flink.table.api._
 import org.apache.flink.table.api.bridge.scala._
 
 /**
@@ -33,8 +34,8 @@ object Example {
 
     //调用 table api
     val result = dataTb
-      .select("id,temperature")
-      .filter("id == 'sensor_1'")
+      .select($"id", $"temperature")
+      .filter($"id" === "sensor_1")
 
     result.toAppendStream[(String, Double)].print("result")
     resultSql.toAppendStream[(String, Double)].print("resultSql")

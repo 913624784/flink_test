@@ -18,8 +18,12 @@
 
 package com.qzw.test.streaming
 
+import com.qzw.test.streaming.TopSpeedWindowing.CarEvent
+import org.apache.flink.api.common.serialization.SimpleStringEncoder
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.api.scala._
+import org.apache.flink.core.fs.Path
+import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSink
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
@@ -95,7 +99,12 @@ object IterateExample {
       )
 
     if (params.has("output")) {
-      numbers.writeAsText(params.get("output"))
+      val sink = StreamingFileSink.forRowFormat(
+        new Path("src/main/resources/test/"),
+        new SimpleStringEncoder[((Int, Int), Int)]("UTF-8")
+      ).build()
+      numbers.addSink(sink)
+//      numbers.writeAsText(params.get("output"))
     } else {
       println("Printing result to stdout. Use --output to specify output path.")
       numbers.print()

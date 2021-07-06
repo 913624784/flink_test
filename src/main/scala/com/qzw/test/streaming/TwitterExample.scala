@@ -20,9 +20,12 @@ package com.qzw.test.streaming
 
 import com.qzw.test.{TwitterExampleData, TwitterSource}
 import org.apache.flink.api.common.functions.FlatMapFunction
+import org.apache.flink.api.common.serialization.SimpleStringEncoder
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.api.scala._
+import org.apache.flink.core.fs.Path
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
+import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSink
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.util.Collector
 
@@ -100,7 +103,12 @@ object TwitterExample {
 
     // emit result
     if (params.has("output")) {
-      tweets.writeAsText(params.get("output"))
+      val sink = StreamingFileSink.forRowFormat(
+        new Path("src/main/resources/test/"),
+        new SimpleStringEncoder[(String, Int)]("UTF-8")
+      ).build()
+      tweets.addSink(sink)
+//      tweets.writeAsText(params.get("output"))
     } else {
       println("Printing result to stdout. Use --output to specify output path.")
       tweets.print()

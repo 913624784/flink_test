@@ -18,10 +18,13 @@
 
 package com.qzw.test.streaming
 
+import org.apache.flink.api.common.serialization.SimpleStringEncoder
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.api.scala._
+import org.apache.flink.core.fs.Path
 import org.apache.flink.streaming.api.functions.AssignerWithPunctuatedWatermarks
 import org.apache.flink.streaming.api.functions.co.CoMapFunction
+import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSink
 import org.apache.flink.streaming.api.functions.source.SourceFunction
 import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext
 import org.apache.flink.streaming.api.scala.function.AllWindowFunction
@@ -75,7 +78,12 @@ object IncrementalLearningSkeleton {
 
     // emit result
     if (params.has("output")) {
-      prediction.writeAsText(params.get("output"))
+      val sink = StreamingFileSink.forRowFormat(
+        new Path("src/main/resources/test/"),
+        new SimpleStringEncoder[Integer]("UTF-8")
+      ).build()
+      prediction.addSink(sink)
+//      prediction.writeAsText(params.get("output"))
     } else {
       println("Printing result to stdout. Use --output to specify output path.")
       prediction.print()

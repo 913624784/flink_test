@@ -19,8 +19,11 @@
 package com.qzw.test.streaming
 
 import com.qzw.test.WordCountData
+import org.apache.flink.api.common.serialization.SimpleStringEncoder
 import org.apache.flink.api.java.utils.ParameterTool
 import org.apache.flink.api.scala._
+import org.apache.flink.core.fs.Path
+import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSink
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 
 /**
@@ -87,7 +90,12 @@ object WindowWordCount {
 
     // emit result
     if (params.has("output")) {
-      counts.writeAsText(params.get("output"))
+      val sink = StreamingFileSink.forRowFormat(
+        new Path("src/main/resources/test/"),
+        new SimpleStringEncoder[(String, Int)]("UTF-8")
+      ).build()
+      counts.addSink(sink)
+//      counts.writeAsText(params.get("output"))
     } else {
       println("Printing result to stdout. Use --output to specify output path.")
       counts.print()
