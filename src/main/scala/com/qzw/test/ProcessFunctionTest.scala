@@ -80,7 +80,7 @@ object ProcessFunctionTest {
     //连续 10s 温度上升，报警
     val warnings = ds
       .keyBy(_.id)
-      .process(new TempIncreWarning(10 * 1000L))
+      .process(new TempIncWarning(10 * 1000L))
     warnings.print("warnings")
 
     //按照阈值切分流
@@ -116,7 +116,7 @@ class SplitProcess(threshold: Double) extends ProcessFunction[SensorReading, Sen
  *
  * @param interval 毫秒时间戳
  */
-class TempIncreWarning(interval: Long) extends KeyedProcessFunction[String, SensorReading, String] {
+class TempIncWarning(interval: Long) extends KeyedProcessFunction[String, SensorReading, String] {
 
   //保存上一次的温度,每次都比较是否连续上升
   lazy val temperatureState: ValueState[Double] = getRuntimeContext.getState(new ValueStateDescriptor[Double]("lastTemp", classOf[Double]))
